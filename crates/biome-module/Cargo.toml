@@ -1,0 +1,15 @@
+[package]
+name = "biome-module"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+description = "The biome overlay module. A placeholder until task B2."
+
+[lib]
+name = "biome_module"
+path = "src/lib.rs"
+
+[dependencies]
+biome-tiles = { path = "../biome-tiles" }
+gx-core = { workspace = true }
+gx-module-guest = { workspace = true }
