@@ -22,9 +22,10 @@
 # attached to frame GX_FRAME_ID, not exclusive (an overlay may not be),
 # usesOrigin false and spanSeconds 0 (the albedo does not depend on time),
 # and one input: that frame's record from the `system` layer
-# (client-compute.md section 10.2), slot 0. It needs no max depth: it
-# answers every cell key with an empty section. The module fills whichever
-# frame the record names.
+# (client-compute.md section 10.2), slot 0. The hub requires a max depth
+# for every attached frame; 21, as the terrain layer's, though the module
+# answers every cell key with an empty section and the hub does not limit
+# surface keys by it. The module fills whichever frame the record names.
 set -eu
 
 cd "$(dirname "$0")/.."
@@ -66,8 +67,8 @@ case "$reply" in
     *) echo "the hub returned a hash other than $hash" >&2; exit 1 ;;
 esac
 
-config=$(printf '{"module":"%s","sourceManifest":"%s","attachment":[%s],"overlay":true,"exclusive":false,"spanSeconds":0,"usesOrigin":false,"inputs":[{"layer":"system","frames":[%s]}]}' \
-    "$hash" "$manifest" "$frame" "$frame")
+config=$(printf '{"module":"%s","sourceManifest":"%s","attachment":[%s],"overlay":true,"exclusive":false,"maxDepth":{"%s":21},"spanSeconds":0,"usesOrigin":false,"inputs":[{"layer":"system","frames":[%s]}]}' \
+    "$hash" "$manifest" "$frame" "$frame" "$frame")
 
 echo "== PUT /space/{id}/layer/biome"
 echo "$config"
