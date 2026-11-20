@@ -47,6 +47,14 @@ pub fn land_function(u: f64, v: f64) -> f64 {
 pub fn world(grid: &Grid, r: u32, c: u32) -> (u8, [u8; BANDS]) {
     let u = (f64::from(c) + 0.5) / f64::from(grid.cols());
     let v = (f64::from(r) + 0.5) / f64::from(grid.rows());
+    world_at(u, v)
+}
+
+/// The land byte and albedo bytes of the world at `u` (longitude, 0 at 180
+/// degrees west to 1) and `v` (colatitude, 0 at the north pole to 1 at the
+/// south pole). [`world`] is this at a sample's center. Where the land byte
+/// is 0 the albedo bytes are 0.
+pub fn world_at(u: f64, v: f64) -> (u8, [u8; BANDS]) {
     let land = byte(land_function(u, v) / EDGE + 0.5);
     if land == 0 {
         return (0, [0; BANDS]);

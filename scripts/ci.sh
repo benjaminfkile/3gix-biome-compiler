@@ -1,6 +1,7 @@
 #!/bin/sh
 # Local and CI check: format, lint, the zstd pin, the WebAssembly builds,
-# the tile determinism check under Node, tests, dash check. Exits non-zero
+# the tile determinism check under Node, the module determinism harness,
+# tests, dash check. Exits non-zero
 # on the first failure.
 set -eu
 
@@ -42,12 +43,38 @@ cargo build -q --locked --release --target wasm32-unknown-unknown \
 cargo build -q --locked --release --target wasm32-unknown-unknown \
     -p tiles-wasm-check --lib
 
+echo "== module build"
+sh scripts/build-module.sh
+
 echo "== tile determinism under Node"
 # The same digest the native test pins (conformance/tiles-digest.sha256),
 # computed by the WebAssembly build under Node.
 node scripts/tiles-node.mjs \
     target/wasm32-unknown-unknown/release/tiles_wasm_check.wasm \
     conformance/tiles-digest.sha256
+
+echo "== module determinism harness"
+# The core library's harness (core docs/modules.md): every vector in
+# conformance/module through the native module host (which also runs the
+# host's admission checks: no imports, no forbidden instructions) and
+# through Node. It runs from the core checkout cargo fetched for the gx-core
+# dependency, or from GX_CORE_DIR when set.
+if [ -n "${GX_CORE_DIR:-}" ]; then
+    core=$GX_CORE_DIR
+fi
+if [ ! -f "$core/scripts/module-node.mjs" ]; then
+    echo "core library checkout not found (set GX_CORE_DIR)" >&2
+    exit 1
+fi
+cargo build -q --release --manifest-path "$core/Cargo.toml" \
+    -p gx-module-host --bin gx-module-run --target-dir target/harness
+status=0
+target/harness/release/gx-module-run target/module/biome.wasm conformance/module || status=1
+node "$core/scripts/module-node.mjs" target/module/biome.wasm conformance/module || status=1
+if [ "$status" -ne 0 ]; then
+    echo "module determinism: FAILED" >&2
+    exit 1
+fi
 
 echo "== cargo test"
 cargo test --workspace
