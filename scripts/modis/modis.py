@@ -22,6 +22,7 @@ not downloaded again. The bytes downloaded are added to
 
 import argparse
 import datetime
+import http.client
 import http.cookiejar
 import json
 import netrc
@@ -29,6 +30,7 @@ import os
 import re
 import shutil
 import sys
+import time
 import urllib.parse
 import urllib.request
 
@@ -129,10 +131,28 @@ def opener():
     )
 
 
+# Waits between download attempts, seconds. A failed attempt (a timeout, a
+# dropped connection, a server error) is retried from the start of the file
+# after the next wait; when every attempt fails the error goes to the caller.
+RETRY_WAITS = (10, 30, 60, 120, 300)
+
+
 def download(op, url, path):
-    """Downloads `url` to `path`. Returns the bytes downloaded."""
+    """Downloads `url` to `path`, retrying after RETRY_WAITS. Returns the bytes downloaded."""
+    for attempt, wait in enumerate(RETRY_WAITS + (None,)):
+        try:
+            return download_once(op, url, path)
+        except (OSError, http.client.HTTPException) as e:
+            if wait is None:
+                raise
+            print(f"download {os.path.basename(path)}: attempt {attempt + 1} failed ({e}); retrying in {wait} s", flush=True)
+            time.sleep(wait)
+
+
+def download_once(op, url, path):
+    """One attempt at downloading `url` to `path`. Returns the bytes downloaded."""
     n = 0
-    with op.open(url, timeout=600) as resp, open(path, "wb") as f:
+    with op.open(url, timeout=120) as resp, open(path, "wb") as f:
         while True:
             block = resp.read(1 << 20)
             if not block:

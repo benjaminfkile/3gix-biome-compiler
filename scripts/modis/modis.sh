@@ -6,6 +6,10 @@
 #   sh scripts/modis/modis.sh WORK OUT [JOBS]
 set -eu
 
+# A composite keeps every date's arrays open as memory maps (92 dates x 4
+# arrays), more than the default limit of open files on some systems.
+ulimit -n 4096 2>/dev/null || true
+
 if [ $# -lt 2 ]; then
     echo "usage: modis.sh WORK OUT [JOBS]" >&2
     exit 2
