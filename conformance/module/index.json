@@ -1,0 +1,74 @@
+{
+  "cases": {
+    "01-level0": {
+      "key": "s-4-0-0-0-0",
+      "origin_utc_ms": 0,
+      "sha256": "2154835a5bd7de26395f50a048a853919c561c8422b8d72836cb55ccc60f93c0",
+      "sources": ["8/0/0"],
+      "why": "a level 0 tile: face 0, read from pyramid level 8"
+    },
+    "02-coast": {
+      "key": "s-4-0-10-21-609",
+      "origin_utc_ms": 0,
+      "sha256": "a57b3b9a7163ccb75b378e9d2c75426e6d309e26bb61e9dcecf6f609a9b133bb",
+      "sources": ["0/82/136"],
+      "why": "a deep tile on a coast: partial coverage"
+    },
+    "03-inland": {
+      "key": "s-4-0-10-0-315",
+      "origin_utc_ms": 0,
+      "sha256": "e845e6159808f6b47e5b77710c6fe451d45b70d11f9bf6bdeed8fe13306c1740",
+      "sources": ["0/105/134", "0/105/135"],
+      "why": "an inland tile: full coverage"
+    },
+    "04-ocean": {
+      "key": "s-4-0-10-0-0",
+      "origin_utc_ms": 0,
+      "sha256": "1a19a1913d0d8660b86578da082fbef53349536a1c7601b19245aed471efc2c9",
+      "sources": ["0/125/134", "0/125/135"],
+      "why": "an all ocean tile: the empty overlay tile"
+    },
+    "05-polar": {
+      "key": "s-4-4-3-3-3",
+      "origin_utc_ms": 0,
+      "sha256": "d935a2580d5be80274ccbe1d39de3571925726386b737dccc76328d1f46e9f3d",
+      "sources": ["5/0/0", "5/0/1", "5/0/2", "5/0/3", "5/0/4", "5/0/5", "5/0/6", "5/0/7", "5/0/8", "5/0/9", "5/0/10", "5/0/11", "6/0/0", "6/0/1", "6/0/2", "6/0/3", "6/0/4", "6/0/5"],
+      "why": "a tile holding the north pole"
+    },
+    "06-antimeridian": {
+      "key": "s-4-1-5-15-10",
+      "origin_utc_ms": 0,
+      "sha256": "79cefe7069cb6afe0119cc3a8c28e8091a3ba1303511bde22542cc71e0ce01ca",
+      "sources": ["3/13/0", "3/13/44", "4/6/0", "4/6/22"],
+      "why": "a tile on the 180 degree line, reading both sides of it"
+    },
+    "07-cell": {
+      "key": "4-3-4-4-4",
+      "origin_utc_ms": 0,
+      "sha256": "9bcece1fadea9ddad9cc34078b2e661e28bc8b4e99f9aab13eab6f041fb41232",
+      "sources": [],
+      "why": "a cell key: the empty section"
+    },
+    "08-registry": {
+      "key": "registry",
+      "origin_utc_ms": 0,
+      "sha256": "7e57bc1e3d9c540188dcebfc67d5ebc01ccde9cc629d18bfba8f8dc2aa4c3be8",
+      "sources": [],
+      "why": "the empty registry"
+    },
+    "09-frame": {
+      "key": "frame-4",
+      "origin_utc_ms": 0,
+      "sha256": "13e15669638bbc3b6439b2751940d73b0f666d0788b06888cd8211886b182f4b",
+      "sources": [],
+      "why": "a frame key: the empty record"
+    },
+    "10-other-frame": {
+      "key": "s-5-0-2-1-1",
+      "origin_utc_ms": 0,
+      "sha256": "14f20333f20174b3e450f97ab369909d3fc98a771b6ac2c7895ff89641dd6246",
+      "sources": [],
+      "why": "a surface key of another frame: the empty overlay tile"
+    }
+  }
+}
