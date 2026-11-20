@@ -4,12 +4,14 @@
 //! ```text
 //! biome-tiler finish <dir> [--grid ROWSxCOLS] [--threads N]
 //! biome-tiler synth <dir> [--grid ROWSxCOLS] [--threads N]
+//! biome-tiler modis-cut <composites> <dir> [--grid ROWSxCOLS] [--threads N]
 //! biome-tiler upload <dir>
 //! ```
 //!
 //! `finish` builds levels 1 to 8 from the level 0 tiles in `<dir>`, then
 //! `manifest.bin` and `summary.json`. `synth` writes the level 0 tiles of
-//! the synthetic world, then runs `finish`. Both use the 43200 by 86400
+//! the synthetic world, then runs `finish`. `modis-cut` writes the level 0
+//! tiles from the MODIS composites in `<composites>`, then runs `finish`. Both use the 43200 by 86400
 //! grid unless `--grid` names a smaller one of the same layout. `upload`
 //! reads `GX_HUB_URL` and `GX_API_KEY` from the environment.
 
@@ -17,6 +19,7 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::Instant;
 
+use biome_tiler::modis::modis_cut;
 use biome_tiler::pyramid::{finish, Options, Report};
 use biome_tiler::synth::synth;
 use biome_tiler::upload::{upload, Hub};
@@ -26,6 +29,7 @@ use gx_core::sha256::to_hex;
 const USAGE: &str = "usage:
   biome-tiler finish <dir> [--grid ROWSxCOLS] [--threads N]
   biome-tiler synth <dir> [--grid ROWSxCOLS] [--threads N]
+  biome-tiler modis-cut <composites> <dir> [--grid ROWSxCOLS] [--threads N]
   biome-tiler upload <dir>";
 
 fn main() -> ExitCode {
@@ -54,6 +58,18 @@ fn run(args: &[String]) -> Result<(), String> {
             let (r, written, skipped) = synth(&dir, grid, opts).map_err(|e| e.to_string())?;
             println!("synth: level 0: {written} tiles written, {skipped} already present");
             print_report("synth", &r, start);
+            Ok(())
+        }
+        Some("modis-cut") => {
+            let [composites, rest @ ..] = &args[1..] else {
+                return Err(USAGE.into());
+            };
+            let (dir, grid, opts) = parse(rest)?;
+            let start = Instant::now();
+            let (r, written, skipped) = modis_cut(&PathBuf::from(composites), &dir, grid, opts)
+                .map_err(|e| e.to_string())?;
+            println!("modis-cut: level 0: {written} tiles written, {skipped} already present");
+            print_report("modis-cut", &r, start);
             Ok(())
         }
         Some("upload") => {

@@ -79,6 +79,14 @@ fi
 echo "== cargo test"
 cargo test --workspace
 
+echo "== MODIS composite tests"
+# Run when pyhdf and numpy are installed (scripts/modis/requirements.txt).
+if python3 -c "import numpy, pyhdf" 2>/dev/null; then
+    (cd scripts/modis && python3 -m unittest -v test_modis)
+else
+    echo "skipped: numpy and pyhdf are not installed (scripts/modis/requirements.txt)"
+fi
+
 echo "== dash check"
 # No em or en dashes in anything this repository holds.
 if grep -rnI "$(printf '\342\200\224')\|$(printf '\342\200\223')" \
