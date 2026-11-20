@@ -224,7 +224,11 @@ where
 
 /// Runs `f` for every column `0..cols` on up to `threads` threads and
 /// returns the results in column order.
-fn in_columns<T: Send>(cols: u32, threads: usize, f: impl Fn(u32) -> T + Sync) -> Vec<T> {
+pub(crate) fn in_columns<T: Send>(
+    cols: u32,
+    threads: usize,
+    f: impl Fn(u32) -> T + Sync,
+) -> Vec<T> {
     let threads = threads.clamp(1, cols.max(1) as usize);
     let per = (cols as usize).div_ceil(threads) as u32;
     let f = &f;

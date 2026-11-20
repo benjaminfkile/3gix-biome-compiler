@@ -10,11 +10,13 @@
 //!
 //! - [`pyramid`]: the level 0 writer and the deterministic, resumable
 //!   builder of the coarser levels, the manifest, and the summary.
+//! - [`modis`]: level 0 cut from MODIS albedo composites.
 //! - [`synth`]: the synthetic world as a pyramid, for tests and timing.
 //! - [`upload`]: the uploader.
 
 #![warn(missing_docs)]
 
+pub mod modis;
 pub mod pyramid;
 pub mod synth;
 pub mod upload;
