@@ -1,0 +1,19 @@
+[package]
+name = "biome-tiler"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+description = "Builds the biome tile pyramid from level 0 tiles and uploads it to a hub as a source set."
+
+[lib]
+name = "biome_tiler"
+path = "src/lib.rs"
+
+[[bin]]
+name = "biome-tiler"
+path = "src/main.rs"
+
+[dependencies]
+biome-tiles = { path = "../biome-tiles" }
+gx-core = { workspace = true }
+ureq = { version = "3", default-features = false, features = ["rustls"] }
