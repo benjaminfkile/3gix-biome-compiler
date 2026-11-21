@@ -71,7 +71,7 @@ The layer config `scripts/publish.sh` puts:
 
 ```json
 {"module": "<module hash>", "sourceManifest": "<manifest hash>", "attachment": [4],
- "overlay": true, "exclusive": false, "spanSeconds": 0, "usesOrigin": false,
+ "overlay": true, "required": true, "exclusive": false, "spanSeconds": 0, "usesOrigin": false,
  "inputs": [{"layer": "system", "frames": [4]}]}
 ```
 

@@ -19,7 +19,8 @@
 #                 module's frame for this data)
 #
 # The layer config (client-compute.md section 2.2): an overlay layer
-# attached to frame GX_FRAME_ID, not exclusive (an overlay may not be),
+# attached to frame GX_FRAME_ID, required (tiles keep their parent until
+# this overlay arrives, rendering.md 7.6), not exclusive (an overlay may not be),
 # usesOrigin false and spanSeconds 0 (the albedo does not depend on time),
 # and one input: that frame's record from the `system` layer
 # (client-compute.md section 10.2), slot 0. The hub requires a max depth
@@ -67,7 +68,7 @@ case "$reply" in
     *) echo "the hub returned a hash other than $hash" >&2; exit 1 ;;
 esac
 
-config=$(printf '{"module":"%s","sourceManifest":"%s","attachment":[%s],"overlay":true,"exclusive":false,"maxDepth":{"%s":21},"spanSeconds":0,"usesOrigin":false,"inputs":[{"layer":"system","frames":[%s]}]}' \
+config=$(printf '{"module":"%s","sourceManifest":"%s","attachment":[%s],"overlay":true,"required":true,"exclusive":false,"maxDepth":{"%s":21},"spanSeconds":0,"usesOrigin":false,"inputs":[{"layer":"system","frames":[%s]}]}' \
     "$hash" "$manifest" "$frame" "$frame" "$frame")
 
 echo "== PUT /space/{id}/layer/biome"
